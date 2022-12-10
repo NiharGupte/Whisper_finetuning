@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Union
 from transformers import WhisperForConditionalGeneration
 from transformers import Seq2SeqTrainingArguments
 from transformers import Seq2SeqTrainer
-
+import os
 
 args = argparse.ArgumentParser()
 
@@ -98,7 +98,7 @@ def compute_metrics(pred):
 
 
 training_args = Seq2SeqTrainingArguments(
-    output_dir=model_dir,  # change to a repo name of your choice
+    output_dir="./cache",  # change to a repo name of your choice
     per_device_train_batch_size=2,
     gradient_accumulation_steps=1,  # increase by 2x for every 2x decrease in batch size
     learning_rate=1e-5,
@@ -111,13 +111,13 @@ training_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=2,
     predict_with_generate=True,
     generation_max_length=225,
-    logging_steps=25,
-    report_to=["tensorboard"],
+    # logging_steps=25,
+    # report_to=["tensorboard"],
     save_total_limit=2,
     load_best_model_at_end=True,
     metric_for_best_model="wer",
     greater_is_better=False,
-    push_to_hub=True
+    push_to_hub=False
 )
 
 trainer = Seq2SeqTrainer(
@@ -131,3 +131,5 @@ trainer = Seq2SeqTrainer(
 )
 
 trainer.train()
+trainer.save_model(model_dir)
+os.system("rmdir /s cache")
