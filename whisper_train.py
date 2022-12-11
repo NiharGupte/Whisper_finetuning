@@ -24,6 +24,12 @@ model_name = a.model_name
 model_dir = a.model_dir
 
 
+feature_extractor = WhisperFeatureExtractor.from_pretrained(model_name)
+tokenizer = WhisperTokenizer.from_pretrained(model_name, language="english", task="transcribe")
+processor = WhisperProcessor.from_pretrained(model_name, language="english", task="transcribe")
+model = WhisperForConditionalGeneration.from_pretrained(model_name)
+
+
 def prepare_dataset(batch):
     # load and resample audio data from 48 to 16kHz
     audio = batch["audio"]
@@ -40,11 +46,6 @@ common_voice = load_dataset("pokameswaran/ami-6h")
 common_voice = common_voice.remove_columns(["file", "length", "segment_id", "segment_start_time", "segment_end_time"])
 common_voice = common_voice.cast_column("audio", Audio(sampling_rate=16000))
 common_voice = common_voice.map(prepare_dataset, remove_columns=common_voice.column_names["train"], num_proc=2)
-
-feature_extractor = WhisperFeatureExtractor.from_pretrained(model_name)
-tokenizer = WhisperTokenizer.from_pretrained(model_name, language="english", task="transcribe")
-processor = WhisperProcessor.from_pretrained(model_name, language="english", task="transcribe")
-model = WhisperForConditionalGeneration.from_pretrained(model_name)
 
 
 @dataclass
