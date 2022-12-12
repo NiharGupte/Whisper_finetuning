@@ -45,7 +45,7 @@ model = WhisperForConditionalGeneration.from_pretrained(finetuned_model_name)
 # common_voice = common_voice.cast_column("audio", Audio(sampling_rate=16000))
 # common_voice = common_voice.map(prepare_dataset, remove_columns=common_voice.column_names["train"], num_proc=2)
 data_path = model_name + "_test.href"
-common_voice = load_dataset("json", data_file=data_path)
+common_voice = load_dataset("json", data_files=data_path)
 
 
 @dataclass
