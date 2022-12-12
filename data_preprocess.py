@@ -38,7 +38,7 @@ def prepare_dataset(batch):
     batch["labels"] = tokenizer(batch["text"]).input_ids
     return batch
 
-
+#
 common_voice = load_dataset("pokameswaran/ami-6h")
 common_voice = common_voice.remove_columns(["file", "length", "segment_id", "segment_start_time", "segment_end_time"])
 common_voice = common_voice.cast_column("audio", Audio(sampling_rate=16000))

@@ -10,4 +10,4 @@ for m, d in zip(model_list, dir_list):
     os.system(cmd)
     cmd = "python whisper_eval.py --model_name " + m + " --finetuned_model_name " + d + " --denoising 1"
     os.system(cmd)
-    os.system("rm -r " + m + "_test.hf")
+    os.system("rm -r " + m + "_test.hf") #
