@@ -1,5 +1,6 @@
 import argparse
 from datasets import load_dataset, DatasetDict
+import datasets
 from transformers import WhisperFeatureExtractor
 from transformers import WhisperTokenizer
 from transformers import WhisperProcessor
