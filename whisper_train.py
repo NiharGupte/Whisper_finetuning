@@ -30,22 +30,24 @@ processor = WhisperProcessor.from_pretrained(model_name, language="english", tas
 model = WhisperForConditionalGeneration.from_pretrained(model_name)
 
 
-def prepare_dataset(batch):
-    # load and resample audio data from 48 to 16kHz
-    audio = batch["audio"]
-
-    # compute log-Mel input features from input audio array
-    batch["input_features"] = feature_extractor(audio["array"], sampling_rate=audio["sampling_rate"]).input_features[0]
-
-    # encode target text to label ids
-    batch["labels"] = tokenizer(batch["text"]).input_ids
-    return batch
-
-
-common_voice = load_dataset("pokameswaran/ami-6h")
-common_voice = common_voice.remove_columns(["file", "length", "segment_id", "segment_start_time", "segment_end_time"])
-common_voice = common_voice.cast_column("audio", Audio(sampling_rate=16000))
-common_voice = common_voice.map(prepare_dataset, remove_columns=common_voice.column_names["train"], num_proc=2)
+# def prepare_dataset(batch):
+#     # load and resample audio data from 48 to 16kHz
+#     audio = batch["audio"]
+#
+#     # compute log-Mel input features from input audio array
+#     batch["input_features"] = feature_extractor(audio["array"], sampling_rate=audio["sampling_rate"]).input_features[0]
+#
+#     # encode target text to label ids
+#     batch["labels"] = tokenizer(batch["text"]).input_ids
+#     return batch
+#
+#
+# common_voice = load_dataset("pokameswaran/ami-6h")
+# common_voice = common_voice.remove_columns(["file", "length", "segment_id", "segment_start_time", "segment_end_time"])
+# common_voice = common_voice.cast_column("audio", Audio(sampling_rate=16000))
+# common_voice = common_voice.map(prepare_dataset, remove_columns=common_voice.column_names["train"], num_proc=2)
+data_path = model_name + "_test.href"
+common_voice = load_dataset("json", data_file=data_path)
 
 
 @dataclass
@@ -131,4 +133,13 @@ trainer = Seq2SeqTrainer(
 
 trainer.train()
 trainer.save_model(model_dir)
-os.system("rmdir /s cache")
+
+y = trainer.evaluate()
+
+with open("model_comp.txt","a") as f:
+    string = "Model : "+ model_name + "\n"
+    f.write(string)
+    f.write(str(y))
+    f.write("\n")
+
+os.system("rm -r cache")
