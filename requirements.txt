@@ -1,9 +1,9 @@
-datasets
 git+https://github.com/huggingface/transformers
 librosa
 evaluate
 jiwer
 gradio
 torch
-speechformer
+speechbrain
+datasets
 scipy
