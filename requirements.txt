@@ -5,3 +5,5 @@ evaluate
 jiwer
 gradio
 torch
+speechformer
+scipy
