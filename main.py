@@ -19,4 +19,4 @@ for m, d in zip(model_list, dir_list):
     cmd = "python whisper_eval.py --model_name " + m + " --finetuned_model_name " + d
     os.system(cmd)
 
-    os.system("rm " + m + "_test.href")
+    os.system("rm -r" + m + "_test.hf")
