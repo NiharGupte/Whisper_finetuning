@@ -16,10 +16,12 @@ import os
 args = argparse.ArgumentParser()
 
 args.add_argument("--model_name", type=str, required=True)
+args.add_argument("--need_validation",type=int, required=True)
 
 a = args.parse_args()
 
 model_name = a.model_name
+need_validation = a.need_validation
 
 feature_extractor = WhisperFeatureExtractor.from_pretrained(model_name)
 tokenizer = WhisperTokenizer.from_pretrained(model_name, language="english", task="transcribe")
@@ -40,6 +42,10 @@ def prepare_dataset(batch):
 
 
 common_voice = load_dataset("pokameswaran/ami-6h")
+if need_validation==0:
+  common_voice["train"] = load_dataset("pokameswaran/ami-6h",split="train+validation")
+  common_voice["validation"] = common_voice["test"]
+
 common_voice = common_voice.remove_columns(["file", "length", "segment_id", "segment_start_time", "segment_end_time"])
 common_voice = common_voice.cast_column("audio", Audio(sampling_rate=16000))
 common_voice = common_voice.map(prepare_dataset, remove_columns=common_voice.column_names["train"], num_proc=2)
